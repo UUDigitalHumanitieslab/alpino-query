@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env python3
 # XPathGenerator.pl
 # Alpino-XML XPath Generator
 
