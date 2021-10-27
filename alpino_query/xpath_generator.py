@@ -20,212 +20,178 @@
 
 ############################################################################
 
-use XML::Twig;
+import sys
+import re
+from lxml import etree
 
-my ( $inputxml, $order ) = @ARGV;
+def generate_xpath(twig, order):
+    root = twig
 
-if ( $order eq 'false' ) {
-    $order = 0;
-}
-else {
-    $order = 1;
-}
+    if root.xpath('/alpino_ds'):
+        # for ALPINO XML, leave out the alpino_ds node
+        subtree = root.find('node')
+    else:
+        subtree = root    # start at root node
 
-my $twig = XML::Twig->new( 'pretty_print' => 'indented' );    # create the twig
+    # generate XPath expression
 
-$twig->parse($inputxml);
+    topxpath = GetXPath(subtree)
+    xpath = ProcessTree( subtree, order )
 
-my $root = $twig->root;
-my $subtree;
+    if xpath and topxpath:    # if more than one node is selected
+        xpath = '//' + topxpath + ' and ' + xpath + ']'
 
-if ( $root->get_xpath('/alpino_ds') )
-{    # for ALPINO XML, leave out the alpino_ds node
-    $subtree = $root->first_child;
-}
-else {
-    $subtree = $root;    # start at root node
-}
+    elif xpath and not topxpath:
+        xpath = '//*[' + xpath + ']'
 
-# generate XPath expression
+    elif not xpath and topxpath:
+        xpath = '//' + topxpath + ']'    # if only one node is selected
 
-my $topxpath = GetXPath($subtree);
-$xpath = ProcessTree( $subtree, $order );
+    else:
+        print("ERROR: no XPath expression could be generated.\n")
 
-if ( $xpath && $topxpath ) {    # if more than one node is selected
-    $xpath = '//' . $topxpath . ' and ' . $xpath . ']';
-}
+    if 'not' in xpath:                # exclude nodes using not-function
+        xpath = re.sub(r'\sand\s\@not=".*?"', '')
 
-elsif ( $xpath && !$topxpath ) {
-    $xpath = '//*[' . $xpath . ']';
-}
+    return xpath
 
-elsif ( !$xpath && $topxpath ) {
-    $xpath = '//' . $topxpath . ']';    # if only one node is selected
-}
+def ProcessTree(tree, order):
+    xpath = ''
+    children = tree.getchildren()
+    childxpaths = []; COUNTS = {}; ALREADY = set()
+    if len(children) > 0:
+        for child in children:
+            childxpath = GetXPath(child)
 
-else {
-    print "ERROR: no XPath expression could be generated.\n";
-}
+            if childxpath:
+                lower = ProcessTree( child, order )
+                if lower:
+                    childxpath += ' and ' + lower + ']'
 
-if ( $xpath =~ /not/ ) {                # exclude nodes using not-function
-    $xpath =~ s/\sand\s\@not=".*?"//g;
-}
+                else:
+                    childxpath += ']'
 
-print $xpath;
+                    if 'not' in childxpath:
+                        # exclude nodes using not-function
+                        childxpath = 'not(' + childxpath + ')'
+                        childxpath = re.sub(r'\sand\s\@not=".*?"', '')
 
-sub ProcessTree {
-    my ( $tree, $order ) = @_;
-    my ( $xpath, $nextpath, $childxpath );
-    my @children = $tree->children;
-    my ( @childxpaths, %COUNTS, %ALREADY );
-    if ( @children > 0 ) {
-        foreach (@children) {
-            $childxpath = GetXPath($_);
+                COUNTS[childxpath] = COUNTS.get(childxpath, 0) + 1
+                childxpaths.append( childxpath )
 
-            if ($childxpath) {
-                $lower = &ProcessTree( $_, $order );
-                if ($lower) {
-                    $childxpath .= ' and ' . $lower . ']';
-                }
-                else {
-                    $childxpath .= ']';
-
-                    if ( $childxpath =~ /not/ )
-                    {    # exclude nodes using not-function
-                        $childxpath = 'not(' . $childxpath . ')';
-                        $childxpath =~ s/\sand\s\@not=".*?"//;
-                    }
-
-                }
-                $COUNTS{$childxpath}++;
-                push( @childxpaths, $childxpath );
-
-            }
-        }
-        if (@childxpaths) {
-            for ( $i = 0 ; $i < @childxpaths ; $i++ ) {
+        if childxpaths:
+            i = 0
+            while (i < len(childxpaths)):
 
                 ## ADD COUNT FUNCTION
-                if ( $COUNTS{ $childxpaths[$i] } > 1 ) {
-                    $childxpaths[$i] =
-                        'count('
-                      . $childxpaths[$i] . ') > '
-                      . ( $COUNTS{ $childxpaths[$i] } - 1 );
-                    $dummy;
-                }
+                if COUNTS[childxpaths[i]] > 1:
+                    childxpaths[i] = \
+                        'count(' \
+                      + childxpaths[i] + ') > ' \
+                      + ( COUNTS[childxpaths[i]] - 1 )
+
                 ## REMOVE DOUBLE DAUGHTERS
-                if ( $ALREADY{ $childxpaths[$i] } ) {
-                    splice( @childxpaths, $i, 1 );
-                    $i--;
-                }
-                else {
-                    $ALREADY{ $childxpaths[$i] } = 1;
-                }
+                if childxpaths[i] in ALREADY:
+                    childxpaths = childxpaths[:i] + childxpaths[i+1:]
+                    i -= 1
 
-            }
-            $xpath = join( ' and ', @childxpaths );
-        }
-        else {
+                else:
+                    ALREADY.add(childxpaths[i])
+
+                i += 1
+
+            xpath = str.join( ' and ', childxpaths )
+
+        else:
             #die "not implemented yet\n";
-            return undef;
-        }
-    }
-    else {    # no children
-        if ($order) {
-            $xpath = 'number(@begin)';
-            ( $next_term, $nextpath ) = &FindNextTerminalToCompare($tree);
-            if ($next_term) {
-                if (
-                    $tree->{'att'}->{'begin'} < $next_term->{'att'}->{'begin'} )
-                {
-                    $xpath .= " < ";
-                }
-                else {
-                    $xpath .= " > ";
-                }
-                $xpath .= $nextpath;
-            }
-            else {
-                return undef;
-            }
-        }
-    }
-    return $xpath;
-}
+            return None
 
-sub FindNextTerminalToCompare {
-    my ($tree) = @_;
-    my ( $path, $xpath, $next_terminal );
-    if ( $next_sibling = $tree->next_sibling ) {
-        $path = "../";
-        ( $next_terminal, $xpath ) = &FindNextLeafNode($next_sibling);
-        $path = $path . $xpath;
-        if ( $path =~ /begin/ ) {
+    else:    # no children
+        if order:
+            xpath = 'number(@begin)'
+            next_term, nextpath = FindNextTerminalToCompare(tree)
+            if next_term is not None:
+                if float(tree.attrib.get('begin', 'nan')) < float(next_term.attrib.get('begin', 'nan')):
+
+                    xpath += " < "
+
+                else:
+                    xpath += " > "
+
+                xpath += nextpath
+
+            else:
+                return None
+
+    return xpath
+
+def FindNextTerminalToCompare(tree):
+    next_sibling = tree.getnext()
+    if next_sibling is not None:
+        path = "../"
+        next_terminal, xpath = FindNextLeafNode(next_sibling)
+        path = path + xpath
+        if 'begin' in path:
 
             # $path='number('.$path.')';
-            $path =~ s/\@begin/number\(\@begin\)/;
-        }
-    }
-    else {
+            path = re.sub(r'\@begin', 'number(@begin)', path)
+
+    else:
         # go up the tree to find next sibling
-        my $parent = $tree->parent;
-        if ($parent) {
-            ( $next_terminal, $nextpath ) = &FindNextTerminalToCompare($parent);
-            unless ($nextpath) {
-                return undef;
-            }
-            $path = "../" . $nextpath;
-        }
-        else {
-            return undef;
-        }
-    }
-    return ( $next_terminal, $path );
-}
+        parent = tree.getparent()
+        if parent is not None:
+            next_terminal, nextpath = FindNextTerminalToCompare(parent)
+            if not nextpath:
+                return None, None
 
-sub FindNextLeafNode {
-    my ($node) = @_;
-    my @children = $node->children;
-    my $childpath;
-    my $xpath = GetXPath($node) . ']';
+            path = "../" + nextpath
 
-    if ( @children > 0 ) {
-        ( $node, $childpath ) = FindNextLeafNode( $children[0] );
-        $xpath .= "/" . $childpath;
-        return ( $node, $xpath );
-    }
-    else {
-        my $path = $xpath . '/@begin';
-        return ( $node, $path );
-    }
-}
+        else:
+            return None, None
+        
+    return next_terminal, path
 
-sub GetXPath {
-    my ($tree) = @_;
-    my $att = $tree->{'att'};
-    my @atts;
+def FindNextLeafNode(node):
+    children = node.getchildren()
+    xpath = GetXPath(node) + ']'
 
-    foreach ( keys %$att )
-    {    # all attributes are included in the XPath expression...
-        unless (/postag|begin|end/) {    # ...except these ones
-            push( @atts, "@" . $_ . "=\"" . $$att{$_} . "\"" );
-        }
-    }
+    if len(children) > 0:
+        node, childpath = FindNextLeafNode( children[0] )
+        xpath += "/" + childpath
+        return node, xpath
 
-    my $xstring;
+    else:
+        path = xpath + '/@begin'
+        return node, path
 
-    if ( !@atts ) {
+def GetXPath(tree):
+    att = tree.attrib
+    atts = []
+
+    for key in att:
+        # all attributes are included in the XPath expression...
+        if not re.match(r'/postag|begin|end/', key):    # ...except these ones
+            atts.append("@" + key + "=\"" + att[key] + "\"")
+
+
+    if not atts:
 
         # no matching attributes found
-        return undef;
-    }
+        return ''
 
-    else {
+    else:
         # one or more attributes found
-        my $string = join( " and ", @atts );
-        $xstring = "node[" . $string;
+        string = str.join( " and ", atts )
+        xstring = "node[" + string
 
-        return $xstring;
-    }
+        return xstring
 
-}
+[inputxml, order] = sys.argv[1:]
+twig = etree.fromstring(bytes(inputxml, encoding='utf-8'))
+if order in ['false', 'False', '0', 0, False]:
+    order = False
+else:
+    order = True
+
+xpath = generate_xpath(twig, order)
+print(xpath)
