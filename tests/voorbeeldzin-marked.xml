@@ -1,0 +1,18 @@
+<alpino_ds version="1.3">
+  <node begin="0" cat="top" end="5" id="0" rel="top">
+    <node begin="0" cat="smain" end="4" id="1" rel="--">
+      <node begin="0" end="1" frame="determiner(het,nwh,nmod,pro,nparg)" getal="ev" id="2" infl="het" lcat="np" lemma="dit" naamval="stan" pdtype="pron" persoon="3o" pos="det" postag="VNW(aanw,pron,stan,vol,3o,ev)" pt="vnw" rel="su" rnum="sg" root="dit" sense="dit" status="vol" vwtype="aanw" wh="nwh" word="Dit" interesting="pos"/>
+      <node begin="1" end="2" frame="verb(unacc,sg_heeft,copula)" id="3" infl="sg_heeft" lcat="smain" lemma="zijn" pos="verb" postag="WW(pv,tgw,ev)" pt="ww" pvagr="ev" pvtijd="tgw" rel="hd" root="ben" sc="copula" sense="ben" stype="declarative" tense="present" word="is" wvorm="pv" interesting="pos"/>
+      <node begin="2" cat="np" end="4" id="4" rel="predc">
+        <node begin="2" end="3" frame="determiner(een)" id="5" infl="een" lcat="detp" lemma="een" lwtype="onbep" naamval="stan" npagr="agr" pos="det" postag="LID(onbep,stan,agr)" pt="lid" rel="det" root="een" sense="een" word="een" interesting="pos"/>
+        <node begin="3" end="4" frame="noun(de,count,sg)" gen="de" genus="zijd" getal="ev" graad="basis" id="6" lcat="np" lemma="voorbeeld_zin" naamval="stan" ntype="soort" num="sg" pos="noun" postag="N(soort,ev,basis,zijd,stan)" pt="n" rel="hd" rnum="sg" root="voorbeeld_zin" sense="voorbeeld_zin" word="voorbeeldzin" interesting="pos"/>
+      </node>
+    </node>
+    <node begin="4" end="5" frame="punct(punt)" id="7" lcat="punct" lemma="." pos="punct" postag="LET()" pt="let" rel="--" root="." sense="." special="punt" word="." interesting="pos"/>
+  </node>
+  <sentence>Dit is een voorbeeldzin .</sentence>
+  <comments>
+    <comment>Q#ng1635169159|Dit is een voorbeeldzin .|1|1|-2.0951576943999997</comment>
+  </comments>
+</alpino_ds>
+
