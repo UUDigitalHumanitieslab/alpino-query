@@ -3,6 +3,7 @@
 # GetSubtree.pl
 # Subtree finder which extracts a subtree from an Alpino XML tree
 
+# version 2.0 data: 10.11.2021 translated to Python, multiple includes/excludes per token
 # version 1.8 date: 23.05.2018 made more robust for new versions of Alpino
 # version 1.7 date: 15.12.2014  bug fix
 # version 1.6 date: 15.10.2014  RELEASED WITH GrETEL2.0
@@ -11,20 +12,11 @@
 
 #########################################################################
 
-# argument: -xml: path to xml-tree (with @interesting attrib in the nodes that should be kept)
+# argument: -xml: path to xml-tree (with @include and @exclude attributes for the nodes that should be kept)
 # options:
-# -r (remove):
 #     - rel: remove top rel
 #     - cat: remove top cat
 #     - relcat: remove top rel and top cat
-#
-# -m (mode):
-#           - alpino (default): rel, cat, pos, root, token, begin
-#           - lassy: rel, cat, pos, postag, root, token, begin
-#           - cgn: rel, cat, pt, postag, lemma, token, begin
-#           - sonar: rel, cat, pt, postag, lemma, token, begin
-#
-# -split/-s: split extended pos tags
 
 #########################################################################
 
@@ -47,9 +39,10 @@ def get_subtree(twig, options):
     # Remove top node attrib
     if options != None:
         top = subtree
-        del top.attrib['rel']
-        if options == 'relcat' and top.attrib['cat']:
-            top.attrib['cat'] = ' '
+        if 'rel' in options and 'rel' in top.attrib:
+            del top.attrib['rel']
+        if 'cat' in options and 'cat' in top.attrib:
+            top.attrib['cat'] = ""
         
     return subtree
 
@@ -64,41 +57,34 @@ def cut_unary(twig):
 
 def process_twig( twig, refpos ):
     children = twig.getchildren()
-    int = set()
     for child in children:
         result = process_twig( child, refpos )
         if result == None:
             twig.remove(child)
         else:
-            twig.attrib['interesting'] = 'cat'
+            # preserve @cat and @rel if there are children
+            update = str.join(',', set(twig.attrib.get('include', '').split(',') + ['cat', 'rel']))
+            twig.attrib['include'] = update
 
-    if 'interesting' in twig.attrib \
-        and twig.attrib['interesting'] != 'na':
-        interesting = twig.attrib['interesting']
+    if ('include' in twig.attrib or 'exclude' in twig.attrib) \
+        and twig.attrib.get('include', '') != 'na':
+        include     = twig.attrib.get('include', '').split(',')
+        exclude     = twig.attrib.get('exclude', '').split(',')
         hash        = twig.attrib
 
-        int.add('rel')
-        int.add('begin')
-        int.add('pt')
+        preserve = include + exclude
 
-        if interesting == 'cat':
-            int.add('cat')
-        elif interesting == 'postag':
-            int.add('postag')
-        elif interesting == 'lemma':
-            int.add('lemma')
-        elif interesting == 'token':
-            int.add('lemma')
-            int.add('word')
-            int.add('caseinsensitive')
-        elif interesting == 'not':
-            int.add('not')
-            twig.attrib['not'] = 'not'
+        # needed for generating queries preserving the word order
+        preserve.append('begin')
+        preserve.append('exclude')
+        
+        if not 'cs' in include:
+            preserve.append('caseinsensitive')
 
         for key in hash:
-            if not key in int:
+            if not key in preserve:
                 del twig.attrib[key]
-                
+
         if 'postag' in twig.attrib:
             cgntag = twig.attrib['postag']    # get CGN postag
                  # split tag into separate attribute-value pairs
@@ -329,8 +315,12 @@ def initialize():
 
     return refpos    # {} => hash reference
 
-[inputxml, options] = sys.argv[1:]
+def main():
+    [inputxml, options] = sys.argv[1:]
 
-twig = etree.fromstring(bytes(inputxml, encoding='utf-8'))
-subtree = get_subtree(twig, options)
-print(etree.tostring(subtree, pretty_print=True).decode())
+    twig = etree.fromstring(bytes(inputxml, encoding='utf-8'))
+    subtree = get_subtree(twig, options)
+    print(etree.tostring(subtree, pretty_print=True).decode())
+
+if __name__ == "__main__":
+    main()

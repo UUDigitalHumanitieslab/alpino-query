@@ -1,1 +1,1 @@
-//node[@cat="top" and node[@cat="smain" and @rel="--" and node[@pt="vnw" and @rel="su"] and node[@pt="ww" and @rel="hd"] and node[@cat="np" and @rel="predc" and node[@pt="lid" and @rel="det"] and node[@pt="n" and @rel="hd"]]] and node[@pt="let" and @rel="--"]]
+//node[@cat and node[@cat="smain" and @rel="--" and node[@pos="det"] and node[@pos="verb" and @rel="hd" and lower-case(@word)!="is"] and node[@cat="np" and @rel="predc" and node[@pos="det"] and node[@pos="noun"]]] and node[@pos="punct"]]

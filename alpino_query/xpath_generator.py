@@ -2,6 +2,7 @@
 # XPathGenerator.pl
 # Alpino-XML XPath Generator
 
+# version 2.0 data: 10.11.2021 translated to Python, multiple includes/excludes per token
 # version 1.7 date: 10.06.2015  bug fix (@number)
 # version 1.6 date: 15.12.2014  bug fix (ignore not-function if word order is checked)
 # version 1.5 date: 14.10.2014  RELEASED WITH GrETEL2.0
@@ -35,23 +36,27 @@ def generate_xpath(twig, order):
 
     # generate XPath expression
 
-    topxpath = GetXPath(subtree)
+    topxpath, negate = GetXPath(subtree)
     xpath = ProcessTree( subtree, order )
 
     if xpath and topxpath:    # if more than one node is selected
-        xpath = '//' + topxpath + ' and ' + xpath + ']'
+        if negate:
+            xpath = f'//not({topxpath} and {xpath}])'
+        else:
+            xpath = f'//{topxpath} and {xpath}]'
 
     elif xpath and not topxpath:
-        xpath = '//*[' + xpath + ']'
+        xpath = f'//*[{xpath}]'
 
     elif not xpath and topxpath:
-        xpath = '//' + topxpath + ']'    # if only one node is selected
+        # if only one node is selected
+        if negate:
+            xpath = f'//not({topxpath}])'
+        else:
+            xpath = f'//{topxpath}]'
 
     else:
         print("ERROR: no XPath expression could be generated.\n")
-
-    if 'not' in xpath:                # exclude nodes using not-function
-        xpath = re.sub(r'\sand\s\@not=".*?"', '')
 
     return xpath
 
@@ -61,21 +66,18 @@ def ProcessTree(tree, order):
     childxpaths = []; COUNTS = {}; ALREADY = set()
     if len(children) > 0:
         for child in children:
-            childxpath = GetXPath(child)
+            childxpath, negate = GetXPath(child)
 
             if childxpath:
                 lower = ProcessTree( child, order )
                 if lower:
-                    childxpath += ' and ' + lower + ']'
+                    childxpath += f' and {lower}]'
 
                 else:
                     childxpath += ']'
 
-                    if 'not' in childxpath:
-                        # exclude nodes using not-function
-                        childxpath = 'not(' + childxpath + ')'
-                        childxpath = re.sub(r'\sand\s\@not=".*?"', '')
-
+                if negate:
+                    childxpath = f"not({childxpath})"
                 COUNTS[childxpath] = COUNTS.get(childxpath, 0) + 1
                 childxpaths.append( childxpath )
 
@@ -153,8 +155,11 @@ def FindNextTerminalToCompare(tree):
 
 def FindNextLeafNode(node):
     children = node.getchildren()
-    xpath = GetXPath(node) + ']'
-
+    xpath, negate = GetXPath(node)
+    if negate:
+        xpath = f"not({xpath}])"
+    else:
+        xpath += "]"
     if len(children) > 0:
         node, childpath = FindNextLeafNode( children[0] )
         xpath += "/" + childpath
@@ -164,34 +169,75 @@ def FindNextLeafNode(node):
         path = xpath + '/@begin'
         return node, path
 
+def property_selector(key: str, value: str, lower: bool, negative: bool) -> str:
+    operator = "!=" if negative else "="
+
+    if lower:
+        selector = f"lower-case(@{key}){operator}\"{value.lower()}\""
+    elif value:
+        selector = f"@{key}{operator}\"{value}\""
+    else:
+        selector = f"@{key}"
+        if negative:
+            selector = f"not({selector})"
+
+    return selector
+
 def GetXPath(tree):
     att = tree.attrib
-    atts = []
+    exclude = att.get('exclude', '').split(',')
+
+    selectors = []
+    # if all selectors are exclusive, use the positive selectors
+    # and negate the entire node
+    positive_selectors = []
 
     for key in att:
         # all attributes are included in the XPath expression...
-        if not re.match(r'/postag|begin|end/', key):    # ...except these ones
-            atts.append("@" + key + "=\"" + att[key] + "\"")
+        if not key in ['postag', 'begin', 'end', 'caseinsensitive', 'exclude']:    # ...except these ones
+            value = att[key]
+            lower = False
+
+            if value and key in ['word', 'lemma']:
+                caseinsensitive = att.get('caseinsensitive', 'no')
+                if caseinsensitive == 'yes':
+                    lower = True
+
+            if key in exclude:
+                selectors.append(property_selector(key, value, lower, True))
+                positive_selectors.append(property_selector(key, value, lower, False))
+            else:
+                selectors.append(property_selector(key, value, lower, False))
+            
 
 
-    if not atts:
+    if not selectors:
 
         # no matching attributes found
-        return ''
+        return '', False
 
     else:
         # one or more attributes found
-        string = str.join( " and ", atts )
+        if len(selectors) == len(positive_selectors):
+            selectors = positive_selectors
+            negate = True
+        else:
+            negate = False
+        string = str.join( " and ", selectors )
         xstring = "node[" + string
 
-        return xstring
+        return xstring, negate
 
-[inputxml, order] = sys.argv[1:]
-twig = etree.fromstring(bytes(inputxml, encoding='utf-8'))
-if order in ['false', 'False', '0', 0, False]:
-    order = False
-else:
-    order = True
+def main():
+    [inputxml, order] = sys.argv[1:]
+    twig = etree.fromstring(bytes(inputxml, encoding='utf-8'))
+    if order in ['false', 'False', '0', 0, False]:
+        order = False
+    else:
+        order = True
 
-xpath = generate_xpath(twig, order)
-print(xpath)
+    xpath = generate_xpath(twig, order)
+    print(xpath)
+
+if __name__ == "__main__":
+    main()

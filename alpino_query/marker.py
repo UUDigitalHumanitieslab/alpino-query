@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
+# mark the matched tokens in the tree with include/exclude attributes
 import sys
 import re
 from lxml import etree
 
-def mark_interesting(twig, tokens, attributes):
+def mark(twig, tokens, attributes):
     # add info annotation matrix to alpino parse
     for begin, token in enumerate(tokens):
         if (re.match(r"([_<>\.,\?!\(\)\"\'])|(\&quot;)|(\&apos;)", token)):
@@ -11,18 +12,41 @@ def mark_interesting(twig, tokens, attributes):
         else:
             xp = twig.xpath(f"//node[@word='{token}' and @begin='{begin}']")
         if begin < len(attributes):
-            attr = attributes[begin]
+            attrs = attributes[begin].split(',')
             for x in xp:
-                if attr == 'cs':
-                    x.attrib['interesting'] = 'token'
-                elif attr == 'token':
-                    x.attrib['interesting'] = 'token'
+                include = set()
+                exclude = set()
+                case_insensitive = None
+                for attr in attrs:
+                    if attr[0] == '-':
+                        target = exclude
+                        attr = attr[1:]
+                    else:
+                        target = include
+
+                    if attr == 'cs':
+                        case_insensitive = False
+                    elif attr == 'word':
+                        target.add('word')
+                        if case_insensitive == None:
+                            case_insensitive = True
+                    else:
+                        target.add(attr)
+
+                if case_insensitive:
                     x.attrib['caseinsensitive'] = 'yes'
-                else:
-                    x.attrib['interesting']  = attr
 
-[inputxml, tokens, attributes] = sys.argv[1:]
+                if include:
+                    x.attrib['include'] = str.join(',', include)
+                if exclude:
+                    x.attrib['exclude'] = str.join(',', exclude)
 
-twig = etree.fromstring(bytes(inputxml, encoding='utf-8'))
-mark_interesting(twig, tokens.split(' '), attributes.split(' '))
-print(etree.tostring(twig, pretty_print=True).decode())
+def main():
+    [inputxml, tokens, attributes] = sys.argv[1:]
+
+    twig = etree.fromstring(bytes(inputxml, encoding='utf-8'))
+    mark(twig, tokens.split(' '), attributes.split(' '))
+    print(etree.tostring(twig, pretty_print=True).decode())
+
+if __name__ == "__main__":
+    main()
