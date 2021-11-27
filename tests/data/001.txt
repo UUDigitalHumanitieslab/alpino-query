@@ -1,0 +1,4 @@
+Dit is een voorbeeldzin .
+pos pos,-word,rel pos pos pos
+rel,cat
+0

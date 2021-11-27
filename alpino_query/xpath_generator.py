@@ -21,11 +21,11 @@
 
 ############################################################################
 
-import sys
 import re
 from lxml import etree
 
-def generate_xpath(twig, order):
+
+def generate_xpath(twig: etree._Element, order: bool) -> str:
     root = twig
 
     if root.xpath('/alpino_ds'):
@@ -37,7 +37,7 @@ def generate_xpath(twig, order):
     # generate XPath expression
 
     topxpath, negate = GetXPath(subtree)
-    xpath = ProcessTree( subtree, order )
+    xpath = ProcessTree(subtree, order)
 
     if xpath and topxpath:    # if more than one node is selected
         if negate:
@@ -60,16 +60,19 @@ def generate_xpath(twig, order):
 
     return xpath
 
+
 def ProcessTree(tree, order):
     xpath = ''
     children = tree.getchildren()
-    childxpaths = []; COUNTS = {}; ALREADY = set()
+    childxpaths = []
+    COUNTS = {}
+    ALREADY = set()
     if len(children) > 0:
         for child in children:
             childxpath, negate = GetXPath(child)
 
             if childxpath:
-                lower = ProcessTree( child, order )
+                lower = ProcessTree(child, order)
                 if lower:
                     childxpath += f' and {lower}]'
 
@@ -79,20 +82,20 @@ def ProcessTree(tree, order):
                 if negate:
                     childxpath = f"not({childxpath})"
                 COUNTS[childxpath] = COUNTS.get(childxpath, 0) + 1
-                childxpaths.append( childxpath )
+                childxpaths.append(childxpath)
 
         if childxpaths:
             i = 0
             while (i < len(childxpaths)):
 
-                ## ADD COUNT FUNCTION
+                # ADD COUNT FUNCTION
                 if COUNTS[childxpaths[i]] > 1:
                     childxpaths[i] = \
                         'count(' \
-                      + childxpaths[i] + ') > ' \
-                      + ( COUNTS[childxpaths[i]] - 1 )
+                        + childxpaths[i] + ') > ' \
+                        + (COUNTS[childxpaths[i]] - 1)
 
-                ## REMOVE DOUBLE DAUGHTERS
+                # REMOVE DOUBLE DAUGHTERS
                 if childxpaths[i] in ALREADY:
                     childxpaths = childxpaths[:i] + childxpaths[i+1:]
                     i -= 1
@@ -102,10 +105,10 @@ def ProcessTree(tree, order):
 
                 i += 1
 
-            xpath = str.join( ' and ', childxpaths )
+            xpath = str.join(' and ', childxpaths)
 
         else:
-            #die "not implemented yet\n";
+            # die "not implemented yet\n";
             return None
 
     else:    # no children
@@ -126,6 +129,7 @@ def ProcessTree(tree, order):
                 return None
 
     return xpath
+
 
 def FindNextTerminalToCompare(tree):
     next_sibling = tree.getnext()
@@ -150,8 +154,9 @@ def FindNextTerminalToCompare(tree):
 
         else:
             return None, None
-        
+
     return next_terminal, path
+
 
 def FindNextLeafNode(node):
     children = node.getchildren()
@@ -161,13 +166,14 @@ def FindNextLeafNode(node):
     else:
         xpath += "]"
     if len(children) > 0:
-        node, childpath = FindNextLeafNode( children[0] )
+        node, childpath = FindNextLeafNode(children[0])
         xpath += "/" + childpath
         return node, xpath
 
     else:
         path = xpath + '/@begin'
         return node, path
+
 
 def property_selector(key: str, value: str, lower: bool, negative: bool) -> str:
     operator = "!=" if negative else "="
@@ -183,6 +189,7 @@ def property_selector(key: str, value: str, lower: bool, negative: bool) -> str:
 
     return selector
 
+
 def GetXPath(tree):
     att = tree.attrib
     exclude = att.get('exclude', '').split(',')
@@ -194,7 +201,8 @@ def GetXPath(tree):
 
     for key in att:
         # all attributes are included in the XPath expression...
-        if not key in ['postag', 'begin', 'end', 'caseinsensitive', 'exclude']:    # ...except these ones
+        # ...except these ones
+        if key not in ['postag', 'begin', 'end', 'caseinsensitive', 'exclude']:
             value = att[key]
             lower = False
 
@@ -205,11 +213,10 @@ def GetXPath(tree):
 
             if key in exclude:
                 selectors.append(property_selector(key, value, lower, True))
-                positive_selectors.append(property_selector(key, value, lower, False))
+                positive_selectors.append(
+                    property_selector(key, value, lower, False))
             else:
                 selectors.append(property_selector(key, value, lower, False))
-            
-
 
     if not selectors:
 
@@ -223,13 +230,13 @@ def GetXPath(tree):
             negate = True
         else:
             negate = False
-        string = str.join( " and ", selectors )
+        string = str.join(" and ", selectors)
         xstring = "node[" + string
 
         return xstring, negate
 
-def main():
-    [inputxml, order] = sys.argv[1:]
+
+def main(inputxml, order):
     twig = etree.fromstring(bytes(inputxml, encoding='utf-8'))
     if order in ['false', 'False', '0', 0, False]:
         order = False
@@ -237,7 +244,4 @@ def main():
         order = True
 
     xpath = generate_xpath(twig, order)
-    print(xpath)
-
-if __name__ == "__main__":
-    main()
+    return xpath

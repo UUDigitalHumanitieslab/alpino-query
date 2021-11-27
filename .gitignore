@@ -1,5 +1,9 @@
 .tscache
 *.log
+*.pyc
+*.egg-info/*
+.mypy_cache/*
+dist/*
 *~
 tmp/*
 log/*

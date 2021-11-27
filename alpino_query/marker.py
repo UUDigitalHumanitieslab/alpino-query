@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # mark the matched tokens in the tree with include/exclude attributes
-import sys
 import re
+from typing import List
 from lxml import etree
 
-def mark(twig, tokens, attributes):
+
+def mark(twig, tokens, attributes) -> None:
     # add info annotation matrix to alpino parse
     for begin, token in enumerate(tokens):
         if (re.match(r"([_<>\.,\?!\(\)\"\'])|(\&quot;)|(\&apos;)", token)):
@@ -28,7 +29,7 @@ def mark(twig, tokens, attributes):
                         case_insensitive = False
                     elif attr == 'word':
                         target.add('word')
-                        if case_insensitive == None:
+                        if case_insensitive is None:
                             case_insensitive = True
                     else:
                         target.add(attr)
@@ -37,16 +38,12 @@ def mark(twig, tokens, attributes):
                     x.attrib['caseinsensitive'] = 'yes'
 
                 if include:
-                    x.attrib['include'] = str.join(',', include)
+                    x.attrib['include'] = str.join(',', sorted(include))
                 if exclude:
-                    x.attrib['exclude'] = str.join(',', exclude)
+                    x.attrib['exclude'] = str.join(',', sorted(exclude))
 
-def main():
-    [inputxml, tokens, attributes] = sys.argv[1:]
 
+def main(inputxml: str, tokens: List[str], attributes: List[str]) -> etree._Element:
     twig = etree.fromstring(bytes(inputxml, encoding='utf-8'))
-    mark(twig, tokens.split(' '), attributes.split(' '))
-    print(etree.tostring(twig, pretty_print=True).decode())
-
-if __name__ == "__main__":
-    main()
+    mark(twig, tokens, attributes)
+    return twig

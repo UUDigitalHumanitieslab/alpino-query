@@ -1,0 +1,1 @@
+//node[@cat and node[@cat="smain" and @rel="--" and node[@pos="det"] and node[@pos="verb" and @rel="hd" and lower-case(@word)!="is"] and node[@cat="np" and @rel="predc" and node[@pos="det"] and node[@pos="noun"]]] and node[@pos="punct"]]
