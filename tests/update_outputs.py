@@ -12,9 +12,7 @@ datadir = path.join(testdir, "data")
 # import this implementation
 sys.path.insert(0, path.join(testdir, ".."))
 
-from alpino_query.xpath_generator import main as xpath_generator
-from alpino_query.subtree import main as subtree
-from alpino_query import mark
+from alpino_query import AlpinoQuery
 
 def read(filename):
     with open(path.join(datadir, filename)) as f:
@@ -29,17 +27,20 @@ def write(filename, content):
 def update(basename):
     [tokens, attributes, options, order] = read(basename + ".txt").splitlines()
 
+    query = AlpinoQuery()
+
     alpino_xml = read(basename + ".xml")
-    marked = mark(alpino_xml,
-                  tokens.split(' '),
-                  attributes.split(' '))
-    write(basename + ".marked.xml", marked)
+    query.mark(alpino_xml,
+               tokens.split(' '),
+               attributes.split(' '))
+    write(basename + ".marked.xml", query.marked_xml)
 
-    tree = subtree([marked, options])
-    write(basename + ".subtree.xml", tree)
+    query.generate_subtree(options.split(','))
+    write(basename + ".subtree.xml", query.subtree_xml)
 
-    xpath = xpath_generator([tree, order])
+    xpath = query.generate_xpath(order == '1')
     write(basename + ".xpath", xpath)
+
 
 input_files = glob.glob(path.join(datadir, '*.txt'))
 for input in input_files:

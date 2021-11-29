@@ -71,6 +71,7 @@ The first statement does *require* the existence of a node, whereas the second a
 ## Upload to PyPi
 
 ```bash
+pip install twine
 python setup.py sdist
 twine upload dist/*
 ```

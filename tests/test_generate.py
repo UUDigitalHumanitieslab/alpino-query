@@ -26,8 +26,8 @@ class TestConsole(unittest.TestCase):
         query = AlpinoQuery()
         alpino_xml = self.read(basename + ".xml")
         query.mark(alpino_xml,
-                          tokens.split(' '),
-                          attributes.split(' '))
+                   tokens.split(' '),
+                   attributes.split(' '))
 
         self.compare_lines(basename + ".marked.xml", query.marked_xml)
 

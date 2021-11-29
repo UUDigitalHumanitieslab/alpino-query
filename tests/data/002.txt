@@ -1,0 +1,4 @@
+Hier is een andere zin .
+cs,word na rel -cs,word pos,-word na
+cat
+1

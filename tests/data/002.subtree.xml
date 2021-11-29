@@ -1,0 +1,9 @@
+<node begin="0" cat="" rel="--">
+      <node begin="0" word="Hier"/>
+      <node begin="2" cat="np" rel="su">
+        <node begin="2" rel="det"/>
+        <node begin="3" word="andere" caseinsensitive="yes"/>
+        <node begin="4" pos="noun" word="zin" caseinsensitive="yes" exclude="word"/>
+      </node>
+    </node>
+    

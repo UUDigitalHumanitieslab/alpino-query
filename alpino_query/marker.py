@@ -26,7 +26,9 @@ def mark(twig, tokens, attributes) -> None:
                         target = include
 
                     if attr == 'cs':
-                        case_insensitive = False
+                        # cs: case sensitive
+                        # -cs: case insensitive
+                        case_insensitive = target is exclude
                     elif attr == 'word':
                         target.add('word')
                         if case_insensitive is None:
