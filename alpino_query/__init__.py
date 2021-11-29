@@ -16,18 +16,18 @@ class AlpinoQuery:
     def subtree_xml(self):
         return self.__get_xml(self.subtree)
 
-    def mark(self, inputxml: str, tokens: List[str], attributes: List[str]) -> None:
+    def mark(self, inputxml: str, tokens: List[str], attributes: List[str]) -> etree._Element:
         self.marked = mark(inputxml, tokens, attributes)
         return self.marked
 
-    def generate_subtree(self, remove: List[str]) -> None:
+    def generate_subtree(self, remove: List[str]) -> etree._Element:
         """
         Generate subtree, removes the top "rel" and/or "cat"
         """
         self.subtree = generate_subtree(self.marked, remove)
         return self.subtree
 
-    def generate_xpath(self, order: bool) -> None:
+    def generate_xpath(self, order: bool) -> str:
         self.xpath = generate_xpath(self.subtree_xml, order)
         return self.xpath
 
