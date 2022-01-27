@@ -34,15 +34,15 @@ def main():
 
     if action == "mark":
         [inputxml, tokens, attributes] = sys.argv[2:]
-        twig = mark(inputxml, tokens.split(' '), attributes.split(' '))
+        twig = mark(inputxml.replace('\\n', '\n'), tokens.split(' '), attributes.split(' '))
         print(etree.tostring(twig, pretty_print=True).decode())
     elif action == "subtree":
         [inputxml, remove] = sys.argv[2:]
-        subtree = generate_subtree(inputxml, remove)
+        subtree = generate_subtree(inputxml.replace('\\n', '\n'), remove)
         print(etree.tostring(subtree, pretty_print=True).decode())
     elif action == "xpath":
         [inputxml, order] = sys.argv[2:]
-        print(generate_xpath(inputxml, order))
+        print(generate_xpath(inputxml.replace('\\n', '\n'), order))
     else:
         help()
 
