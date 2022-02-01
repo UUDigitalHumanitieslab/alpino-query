@@ -112,8 +112,8 @@ def split_one_tag(tag, refpos):
     # refpos = reference naar hash
     match = re.match(r'(\w+)\((.*?)\)', tag)
     if match:
-        pt = match.groups(1)                # get pt
-        pts = match.groups(2)                # get other parts
+        pt = match.group(1)                # get pt
+        pts = match.group(2)                # get other parts
 
     # assign attribute to parts
     pts = pts.split(',')    # split parts
