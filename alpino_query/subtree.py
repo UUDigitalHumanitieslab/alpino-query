@@ -31,9 +31,7 @@ def generate_subtree(twig: etree._Element, remove: Union[str, List[str]]) -> etr
     # start at 'top' node (leave out alpino_ds node, skip 'parser' tag)
     # 1.8 added 'node'restriction to make sure the first_child is the syntax tree
     root = twig.find('node')  # start at 'top' node (leave out alpino_ds node)
-    tree = root.getchildren()[0]
-    children = tree.getchildren()
-    del children[1]
+    
     subtree = process_twig(root, refpos)
     subtree = cut_unary(subtree)
 
