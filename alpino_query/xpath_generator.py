@@ -93,7 +93,7 @@ def ProcessTree(tree, order):
                     childxpaths[i] = \
                         'count(' \
                         + childxpaths[i] + ') > ' \
-                        + (COUNTS[childxpaths[i]] - 1)
+                        + str(COUNTS[childxpaths[i]] - 1)
 
                 # REMOVE DOUBLE DAUGHTERS
                 if childxpaths[i] in ALREADY:
