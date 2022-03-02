@@ -1,23 +1,23 @@
 <node begin="0" cat="" rel="--">
       <node begin="0" cat="conj" rel="su">
-        <node begin="0" pos="name" rel="cnj"/>
-        <node begin="1" pos="vg" rel="crd"/>
-        <node begin="2" pos="name" rel="cnj"/>
+        <node begin="0" pos="name" rel="cnj" word="Sint" caseinsensitive="yes"/>
+        <node begin="1" pos="vg" rel="crd" word="en" caseinsensitive="yes"/>
+        <node begin="2" pos="name" rel="cnj" word="Piet" caseinsensitive="yes"/>
       </node>
-      <node begin="3" pos="verb" rel="hd"/>
+      <node begin="3" pos="verb" rel="hd" word="zaten" caseinsensitive="yes"/>
       <node begin="0" cat="ti" rel="vc">
-        <node begin="4" pos="comp" rel="cmp"/>
+        <node begin="4" pos="comp" rel="cmp" word="te" caseinsensitive="yes"/>
         <node begin="0" cat="inf" rel="body">
-          <node begin="5" pos="verb" rel="hd"/>
+          <node begin="5" pos="verb" rel="hd" word="denken" caseinsensitive="yes"/>
           <node begin="7" cat="whsub" rel="vc">
-            <node begin="7" pos="pron" rel="whd"/>
+            <node begin="7" pos="pron" rel="whd" word="wat" caseinsensitive="yes"/>
             <node begin="7" cat="ssub" rel="body">
-              <node begin="8" pos="pron" rel="su"/>
-              <node begin="11" pos="verb" rel="hd"/>
+              <node begin="8" pos="pron" rel="su" word="ze" caseinsensitive="yes"/>
+              <node begin="11" pos="verb" rel="hd" word="zouden" caseinsensitive="yes"/>
               <node begin="7" cat="inf" rel="vc">
-                <node begin="9" pos="pron" rel="obj2"/>
-                <node begin="10" pos="adv" rel="mod"/>
-                <node begin="12" pos="verb" rel="hd"/>
+                <node begin="9" pos="pron" rel="obj2" word="jou" caseinsensitive="yes"/>
+                <node begin="10" pos="adv" rel="mod" word="eens" caseinsensitive="yes"/>
+                <node begin="12" pos="verb" rel="hd" word="schenken" caseinsensitive="yes"/>
               </node>
             </node>
           </node>

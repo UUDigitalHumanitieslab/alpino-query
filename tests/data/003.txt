@@ -1,4 +1,4 @@
 Sint en Piet zaten te denken , wat ze jou eens zouden schenken
-rel,token,~lemma,pos,~postag rel,token,~lemma,pos,~postag rel,token,~lemma,pos,~postag rel,token,~lemma,pos,~postag rel,token,~lemma,pos,~postag rel,token,~lemma,pos,~postag na rel,token,~lemma,pos,~postag rel,token,~lemma,pos,~postag rel,token,~lemma,pos,~postag rel,token,~lemma,pos,~postag rel,token,~lemma,pos,~postag rel,token,~lemma,pos,~postag
+rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag na rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag
 cat
 0
