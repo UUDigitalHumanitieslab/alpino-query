@@ -1,0 +1,4 @@
+Dit is een voorbeeldzin .
+na rel na na na
+rel,cat
+0

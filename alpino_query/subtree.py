@@ -33,17 +33,16 @@ def generate_subtree(twig: etree._Element, remove: Union[str, List[str]]) -> etr
     root = twig.find('node')  # start at 'top' node (leave out alpino_ds node)
     
     subtree = process_twig(root, refpos)
-    subtree = cut_unary(subtree)
+    top = cut_unary(subtree)
 
-    # Remove top node attrib
-    if remove:
-        top = subtree
+    # Remove top node attrib, except when it's the only node
+    if remove and len(top.getchildren()):
         if 'rel' in remove and 'rel' in top.attrib:
             del top.attrib['rel']
         if 'cat' in remove and 'cat' in top.attrib:
             top.attrib['cat'] = ""
 
-    return subtree
+    return top
 
 
 """ subroutines """
