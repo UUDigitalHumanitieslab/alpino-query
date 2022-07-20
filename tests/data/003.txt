@@ -1,4 +1,4 @@
-Dit is een voorbeeldzin .
-na rel na na na
-rel,cat
+Sint en Piet zaten te denken , wat ze jou eens zouden schenken
+rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag na rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag rel,word,~lemma,pos,~postag
+cat
 0
