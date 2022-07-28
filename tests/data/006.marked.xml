@@ -1,0 +1,25 @@
+<alpino_ds version="1.6">
+  <parser cats="1" skips="0"/>
+  <node begin="0" cat="top" end="7" id="0" rel="top">
+    <node begin="0" cat="smain" end="7" id="1" rel="--">
+      <node begin="0" end="1" frame="noun(het,mass,sg)" gen="het" getal="ev" his="normal" his_1="decap" his_1_1="normal" id="2" index="1" lcat="np" lemma="alles" naamval="stan" num="sg" pdtype="pron" persoon="3o" pos="noun" postag="VNW(onbep,pron,stan,vol,3o,ev)" pt="vnw" rel="su" rnum="sg" root="alles" sense="alles" status="vol" vwtype="onbep" word="Alles" include="na"/>
+      <node begin="1" end="2" frame="verb('hebben/zijn',sg,modifier(aux(inf)))" his="normal" his_1="normal" id="3" infl="sg" lcat="smain" lemma="moeten" pos="verb" postag="WW(pv,tgw,ev)" pt="ww" pvagr="ev" pvtijd="tgw" rel="hd" root="moet" sc="modifier(aux(inf))" sense="moet" stype="declarative" tense="present" word="moet" wvorm="pv" include="na"/>
+      <node begin="0" cat="inf" end="7" id="4" rel="vc">
+        <node begin="0" end="1" id="5" index="1" rel="su"/>
+        <node begin="2" buiging="zonder" end="3" frame="verb(unacc,inf,intransitive)" his="normal" his_1="normal" id="6" infl="inf" lcat="inf" lemma="veranderen" pos="verb" positie="vrij" postag="WW(inf,vrij,zonder)" pt="ww" rel="hd" root="verander" sc="intransitive" sense="verander" word="veranderen" wvorm="inf" include="na"/>
+        <node begin="3" cat="cp" end="7" id="7" rel="mod">
+          <node begin="3" conjtype="onder" end="4" frame="complementizer" his="normal" his_1="normal" id="8" lcat="cp" lemma="opdat" pos="comp" postag="VG(onder)" pt="vg" rel="cmp" root="opdat" sense="opdat" word="opdat" include="na"/>
+          <node begin="4" cat="ssub" end="7" id="9" rel="body">
+            <node begin="4" end="5" frame="noun(het,mass,sg)" gen="het" getal="ev" his="normal" his_1="normal" id="10" lcat="np" lemma="alles" naamval="stan" num="sg" pdtype="pron" persoon="3o" pos="noun" postag="VNW(onbep,pron,stan,vol,3o,ev)" pt="vnw" rel="su" rnum="sg" root="alles" sense="alles" status="vol" vwtype="onbep" word="alles" include="na"/>
+            <node begin="5" buiging="zonder" end="6" frame="determiner(het,nwh,mod,pro,yparg)" getal-n="zonder-n" graad="basis" his="normal" his_1="normal" id="11" infl="het" lcat="np" lemma="hetzelfde" pos="det" positie="nom" postag="ADJ(nom,basis,zonder,zonder-n)" pt="adj" rel="predc" rnum="sg" root="hetzelfde" sense="hetzelfde" wh="nwh" word="hetzelfde" include="na"/>
+            <node begin="6" end="7" frame="verb(unacc,sg3,copula)" his="normal" his_1="normal" id="12" infl="sg3" lcat="ssub" lemma="blijven" pos="verb" postag="WW(pv,tgw,met-t)" pt="ww" pvagr="met-t" pvtijd="tgw" rel="hd" root="blijf" sc="copula" sense="blijf" tense="present" word="blijft" wvorm="pv" include="na"/>
+          </node>
+        </node>
+      </node>
+    </node>
+  </node>
+  <sentence sentid="ng1659017906">Alles moet veranderen opdat alles hetzelfde blijft</sentence>
+  <comments>
+    <comment>Q#ng1659017906|Alles moet veranderen opdat alles hetzelfde blijft|1|1|-7.796828167460001</comment>
+  </comments>
+</alpino_ds>

@@ -1,0 +1,4 @@
+Nou ja , dat maakt niet uit .
+na na na rel,word,~lemma,~pos,-postag na na na na
+rel,cat
+0
