@@ -1,0 +1,1 @@
+//node[@rel="su" and lower-case(@word)="dat" and @vwtype!="aanw" and @pdtype!="pron" and @naamval!="stan" and @status!="vol" and @persoon!="3o" and @getal!="ev"]

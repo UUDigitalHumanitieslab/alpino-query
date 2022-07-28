@@ -33,6 +33,11 @@ def generate_subtree(twig: etree._Element, remove: Union[str, List[str]]) -> etr
     root = twig.find('node')  # start at 'top' node (leave out alpino_ds node)
     
     subtree = process_twig(root, refpos)
+    if subtree is None:
+        subtree = root
+        for key in subtree.attrib:
+            if key not in ['rel', 'cat']:
+                del subtree.attrib[key]
     top = cut_unary(subtree)
 
     # Remove top node attrib, except when it's the only node
@@ -91,11 +96,13 @@ def process_twig(twig, refpos):
             cgntag = twig.attrib['postag']    # get CGN postag
             # split tag into separate attribute-value pairs
             split = split_one_tag(cgntag, refpos)
-
             if split:
                 for s in split:
                     [att, val] = s.split('|')
                     twig.attrib[att] = val    # add new elements
+                    if 'postag' in exclude:
+                        exclude.append(att)
+            twig.attrib['exclude'] = ','.join(exclude)
 
         return twig
 
