@@ -21,18 +21,21 @@
 #########################################################################
 
 import re
-from typing import List, Union
+from typing import Optional, List, Union
 from lxml import etree
 
 
-def generate_subtree(twig: etree._Element, remove: Union[str, List[str]]) -> etree._Element:
+def generate_subtree(twig: etree._Element, remove: Union[str, List[str]]) -> Optional[etree._Element]:
     refpos = initialize()
 
     # start at 'top' node (leave out alpino_ds node, skip 'parser' tag)
     # 1.8 added 'node'restriction to make sure the first_child is the syntax tree
     root = twig.find('node')  # start at 'top' node (leave out alpino_ds node)
-    
+
     subtree = process_twig(root, refpos)
+    if subtree is None:
+        # nothing to match, so match everything
+        return None
     top = cut_unary(subtree)
 
     # Remove top node attrib, except when it's the only node
@@ -91,11 +94,13 @@ def process_twig(twig, refpos):
             cgntag = twig.attrib['postag']    # get CGN postag
             # split tag into separate attribute-value pairs
             split = split_one_tag(cgntag, refpos)
-
             if split:
                 for s in split:
                     [att, val] = s.split('|')
                     twig.attrib[att] = val    # add new elements
+                    if 'postag' in exclude:
+                        exclude.append(att)
+            twig.attrib['exclude'] = ','.join(exclude)
 
         return twig
 
@@ -319,7 +324,7 @@ def initialize():
     return refpos    # {} => hash reference
 
 
-def main(inputxml: str, remove: str) -> etree._Element:
+def main(inputxml: str, remove: str) -> Optional[etree._Element]:
     twig = etree.fromstring(bytes(inputxml, encoding='utf-8'))
     subtree = generate_subtree(twig, remove)
     return subtree

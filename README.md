@@ -26,10 +26,21 @@ It is also possible to mark multiple properties for a token, this is done by sep
 alpino-query mark "$(<tests/data/001.xml)" "Dit is een voorbeeldzin ." "pos pos,-word,rel pos pos pos"
 ```
 
-## Subtree and XPath
+## Subtree
+
+Generates a subtree containing only the marked properties. It will also contain additional attributes to mark that properties should be excluded and/or case sensitive.
+
+The second argument can be empty, `cat`, `rel` or both (i.e. `catrel` or `cat,rel`). This indicates which attributes should be removed from the top node. When only one node is left in the subtree, this argument is ignored.
 
 ```bash
 alpino-query subtree "$(<tests/data/001.marked.xml)" cat
+```
+
+## XPath
+
+Generates an XPath to query a treebank from the generated subtree. Second argument indicates whether a query should be generated which is order-sensitive.
+
+```bash
 alpino-query xpath "$(<tests/data/001.subtree.xml)" 0
 ```
 
@@ -56,6 +67,7 @@ print(query.xpath)
 ## Considerations
 
 ### Exclusive
+
 When querying a node this could be exclusive in multiple ways.
 For example:
 

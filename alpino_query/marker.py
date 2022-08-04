@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 # mark the matched tokens in the tree with include/exclude attributes
 import re
-from typing import List
+from typing import cast, List, Set
 from lxml import etree
 
 
-def mark(twig, tokens, attributes) -> None:
+def mark(twig: etree._Element, tokens: List[str], attributes: List[str]) -> None:
     # add info annotation matrix to alpino parse
     for begin, token in enumerate(tokens):
-        if (re.match(r"([_<>\.,\?!\(\)\"\'])|(\&quot;)|(\&apos;)", token)):
-            xp = twig.xpath(f"//node[@begin='{begin}']")
+        if re.match(r"([_<>\.,\?!\(\)\"\'])|(\&quot;)|(\&apos;)", token):
+            xp = cast(List[etree._Element], twig.xpath(f"//node[@begin='{begin}']"))
         else:
-            xp = twig.xpath(f"//node[@word='{token}' and @begin='{begin}']")
+            xp = cast(List[etree._Element], twig.xpath(f"//node[@word='{token}' and @begin='{begin}']"))
         if begin < len(attributes):
             attrs = attributes[begin].split(',')
             for x in xp:
-                include = set()
-                exclude = set()
+                include: Set[str] = set()
+                exclude: Set[str] = set()
                 case_insensitive = None
                 for attr in attrs:
                     if attr[0] == '-':
@@ -46,6 +46,6 @@ def mark(twig, tokens, attributes) -> None:
 
 
 def main(inputxml: str, tokens: List[str], attributes: List[str]) -> etree._Element:
-    twig = etree.fromstring(bytes(inputxml, encoding='utf-8'))
+    twig: etree._Element = etree.fromstring(bytes(inputxml, encoding='utf-8'))
     mark(twig, tokens, attributes)
     return twig
