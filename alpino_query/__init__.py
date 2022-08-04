@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from typing import List
+from typing import List, Optional
 from lxml import etree
 
 from .marker import main as mark
@@ -8,6 +8,8 @@ from .xpath_generator import main as generate_xpath
 
 
 class AlpinoQuery:
+    subtree: Optional[etree._Element]
+
     @property
     def marked_xml(self) -> str:
         return self.__get_xml(self.marked)
