@@ -42,3 +42,6 @@ jobs:
     - name: Run unit tests
       run: |
         python -m unittest discover tests/
+    - name: Check output of console script
+      run: |
+        ./test.sh

@@ -39,7 +39,7 @@ def update(basename):
     write(basename + ".subtree.xml", query.subtree_xml)
 
     xpath = query.generate_xpath(order == '1')
-    write(basename + ".xpath", xpath)
+    write(basename + ".xpath", xpath + '\n')
 
 
 input_files = glob.glob(path.join(datadir, '*.txt'))

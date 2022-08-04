@@ -35,7 +35,9 @@ class TestConsole(unittest.TestCase):
         self.compare_lines(basename + ".subtree.xml", query.subtree_xml)
 
         query.generate_xpath({"0": False, "1": True}[order])
-        self.compare_lines(basename + ".xpath", query.xpath)
+        # add a newline, because the output of the console script ends
+        # with a newline
+        self.compare_lines(basename + ".xpath", query.xpath + '\n')
 
     def read(self, filename):
         with open(path.join(self.datadir, filename)) as f:

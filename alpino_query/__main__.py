@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 import sys
 
-from lxml import etree
-from .marker import main as mark
-from .subtree import main as generate_subtree
-from .xpath_generator import main as generate_xpath
+from . import AlpinoQuery
 
 
 def help():
@@ -32,17 +29,22 @@ def main():
         help()
         return
 
+    query = AlpinoQuery()
     if action == "mark":
         [inputxml, tokens, attributes] = sys.argv[2:]
-        twig = mark(inputxml.replace('\\n', '\n'), tokens.split(' '), attributes.split(' '))
-        print(etree.tostring(twig, pretty_print=True).decode())
+        query.mark(inputxml.replace('\\n', '\n'),
+                   tokens.split(' '), attributes.split(' '))
+        print(query.marked_xml)
     elif action == "subtree":
         [inputxml, remove] = sys.argv[2:]
-        subtree = generate_subtree(inputxml.replace('\\n', '\n'), remove)
-        print(etree.tostring(subtree, pretty_print=True).decode())
+        query.marked_xml = inputxml.replace('\\n', '\n')
+        query.generate_subtree(remove)
+        print(query.subtree_xml)
     elif action == "xpath":
         [inputxml, order] = sys.argv[2:]
-        print(generate_xpath(inputxml.replace('\\n', '\n'), order))
+        query.subtree_xml = inputxml.replace('\\n', '\n')
+        query.generate_xpath(order in ['true', 'True', '1', 1, True])
+        print(query.xpath)
     else:
         help()
 

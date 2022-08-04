@@ -9,14 +9,22 @@ from .xpath_generator import main as generate_xpath
 
 class AlpinoQuery:
     @property
-    def marked_xml(self):
+    def marked_xml(self) -> str:
         return self.__get_xml(self.marked)
+
+    @marked_xml.setter
+    def marked_xml(self, value: str) -> None:
+        self.marked = etree.fromstring(bytes(value, encoding='utf-8'))
 
     @property
     def subtree_xml(self):
         if self.subtree is None:
-            return '<node cat="top" rel="top"></node>'
+            return '<node cat="top" rel="top"></node>\n'
         return self.__get_xml(self.subtree)
+
+    @subtree_xml.setter
+    def subtree_xml(self, value: str) -> None:
+        self.subtree = etree.fromstring(bytes(value, encoding='utf-8'))
 
     def mark(self, inputxml: str, tokens: List[str], attributes: List[str]) -> etree._Element:
         self.marked = mark(inputxml, tokens, attributes)
