@@ -39,6 +39,7 @@ do
     # TEST XPATH
     subtreexml=$(cat $subtreexml_path)
      (python -m alpino_query xpath "$subtreexml" "$order") > /tmp/output
+    echo "💩" >> /tmp/output
 
     diff -B ${TEST/.txt/.xpath} /tmp/output
     check_error $? "XPATH" $TEST
