@@ -2,6 +2,7 @@
 from typing import List, Optional
 from lxml import etree
 
+from .parser import parse_sentence
 from .marker import main as mark
 from .subtree import generate_subtree
 from .xpath_generator import main as generate_xpath
@@ -27,6 +28,11 @@ class AlpinoQuery:
     @subtree_xml.setter
     def subtree_xml(self, value: str) -> None:
         self.subtree = etree.fromstring(bytes(value, encoding='utf-8'))
+
+    def parse(self, tokens: List[str]) -> str:
+        parse = parse_sentence(' '.join(tokens))
+        self.subtree_xml = parse
+        return parse
 
     def mark(self, inputxml: str, tokens: List[str], attributes: List[str]) -> etree._Element:
         self.marked = mark(inputxml, tokens, attributes)

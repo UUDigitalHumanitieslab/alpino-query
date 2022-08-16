@@ -38,6 +38,7 @@ jobs:
       run: |
         pip install mypy
         pip install lxml-stubs
+        pip install types-requests
         mypy **/*.py
     - name: Run unit tests
       run: |

@@ -6,6 +6,24 @@ pip install alpino-query
 
 When running locally without installing, instead of `alpino-query` use `python -m alpino_query`.
 
+## Parse
+
+Parse a tokenized sentence using the Alpino instance running on [gretel.hum.uu.nl](https://gretel.hum.uu.nl).
+
+For example:
+
+```bash
+alpino-query parse Dit is een voorbeeldzin .
+```
+
+Note that the period is a separate token.
+
+It also works when the sentence is passed as a single argument.
+
+```bash
+alpino-query parse "Dit is een voorbeeldzin ."
+```
+
 ## Mark
 
 Mark which part of the treebank should selected for filtering. It has three inputs:
@@ -49,11 +67,11 @@ alpino-query xpath "$(<tests/data/001.subtree.xml)" 0
 ```python
 from alpino_query import AlpinoQuery
 
-alpino_xml = "<Alpino xml as string>"
 tokens = ["Dit", "is", "een", "voorbeeldzin", "."]
 attributes = ["pos", "pos,-word,rel", "pos", "pos", "pos"]
 
 query = AlpinoQuery()
+alpino_xml = query.parse(tokens)
 query.mark(alpino_xml, tokens, attributes)
 print(query.marked_xml) # query.marked contains the lxml Element
 

@@ -7,9 +7,13 @@ from . import AlpinoQuery
 def help():
     print("""
 [action]
+    parse
     mark
     subtree
     xpath
+
+For parse:
+    parse [tokens]
 
 For mark:
     mark [inputxml] [tokens] [attributes]
@@ -30,7 +34,14 @@ def main():
         return
 
     query = AlpinoQuery()
-    if action == "mark":
+    if action == "parse":
+        sentence = sys.argv[2:]
+        if len(sentence) == 0:
+            help()
+            return
+        alpino_xml = query.parse(sentence)
+        print(alpino_xml)
+    elif action == "mark":
         [inputxml, tokens, attributes] = sys.argv[2:]
         query.mark(inputxml.replace('\\n', '\n'),
                    tokens.split(' '), attributes.split(' '))
