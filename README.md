@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/UUDigitalHumanitiesLab/alpino-query/workflows/Python%20package/badge.svg)](https://github.com/UUDigitalHumanitiesLab/alpino-query/actions)
+
 # Alpino Query
 
 ```bash

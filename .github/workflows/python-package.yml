@@ -4,10 +4,10 @@
 name: Python package
 
 on:
+  workflow_dispatch:
   push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
+    paths-ignore:
+      - '**.md'
 
 jobs:
   build:
