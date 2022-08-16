@@ -5,7 +5,7 @@ with open('README.md') as file:
 
 setup(
     name='alpino-query',
-    python_requires='>=3.6, <4',
+    python_requires='>=3.7, <4',
     version='2.1.7',
     description='Generating XPATH queries based on a Dutch Alpino syntax tree and user-specified token properties.',
     long_description=long_description,
