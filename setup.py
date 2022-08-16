@@ -15,6 +15,7 @@ setup(
     url='https://github.com/UUDigitalHumanitieslab/alpino-query',
     license='CC BY-NC-SA 4.0',
     packages=['alpino_query'],
+    package_data={"alpino_query": ["py.typed"]},
     zip_safe=True,
     install_requires=[
         'requests',
