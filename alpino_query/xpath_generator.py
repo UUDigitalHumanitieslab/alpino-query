@@ -22,6 +22,7 @@
 ############################################################################
 
 import re
+from typing import cast, List, Tuple, Iterable
 from lxml import etree
 
 
@@ -30,7 +31,7 @@ def generate_xpath(twig: etree._Element, order: bool) -> str:
 
     if root.xpath('/alpino_ds'):
         # for ALPINO XML, leave out the alpino_ds node
-        subtree = root.find('node')
+        subtree = cast(etree._Element, root.find('node'))
     else:
         subtree = root    # start at root node
 
@@ -41,7 +42,7 @@ def generate_xpath(twig: etree._Element, order: bool) -> str:
 
     if xpath and topxpath:    # if more than one node is selected
         if negate:
-            xpath = f'//not({topxpath} and {xpath}])'
+            xpath = f'//node[@rel="top" and not(..//{topxpath} and ..//{xpath}])]'
         else:
             xpath = f'//{topxpath} and {xpath}]'
 
@@ -51,7 +52,7 @@ def generate_xpath(twig: etree._Element, order: bool) -> str:
     elif not xpath and topxpath:
         # if only one node is selected
         if negate:
-            xpath = f'//not({topxpath}])'
+            xpath = f'//node[@rel="top" and not(..//{topxpath}])]'
         else:
             xpath = f'//{topxpath}]'
 
@@ -190,24 +191,33 @@ def property_selector(key: str, value: str, lower: bool, negative: bool) -> str:
     return selector
 
 
-def GetXPath(tree):
-    att = tree.attrib
-    exclude = att.get('exclude', '').split(',')
+def GetXPath(tree: etree._Element) -> Tuple[str, bool]:
+    """Generates an XPath from the passed tree structure. Might also
+    return a value indicating whether the entire query should be
+    negated (using not())
 
-    selectors = []
+    Args:
+        tree (etree._Element): marked tree to process
+
+    Returns:
+        str, bool: query, negate
+    """
+    att = tree.attrib
+    exclude = cast(str, att.get('exclude', '')).split(',')
+
+    selectors: List[str] = []
     # if all selectors are exclusive, use the positive selectors
     # and negate the entire node
     positive_selectors = []
 
-    for key in att:
+    for key, value in cast(Iterable[Tuple[str, str]], att.items()):
         # all attributes are included in the XPath expression...
         # ...except these ones
         if key not in ['postag', 'begin', 'end', 'caseinsensitive', 'exclude']:
-            value = att[key]
             lower = False
 
             if value and key in ['word', 'lemma']:
-                caseinsensitive = att.get('caseinsensitive', 'no')
+                caseinsensitive: str = att.get('caseinsensitive', 'no')
                 if caseinsensitive == 'yes':
                     lower = True
 

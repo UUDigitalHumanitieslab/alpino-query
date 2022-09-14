@@ -1,0 +1,1 @@
+//node[@cat="smain" and not(node[@pt="ww"]) and not(node[lower-case(@word)="zelf"])]

@@ -1,0 +1,5 @@
+<node begin="0" cat="smain">
+      <node begin="1" pt="ww" exclude="pt"/>
+      <node begin="2" word="zelf" caseinsensitive="yes" exclude="word"/>
+      </node>
+  

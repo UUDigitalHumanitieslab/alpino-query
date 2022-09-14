@@ -1,0 +1,1 @@
+//node[@rel="top" and not(..//node[@pt="vnw"])]
