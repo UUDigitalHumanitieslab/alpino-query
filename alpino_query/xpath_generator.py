@@ -217,7 +217,7 @@ def GetXPath(tree: etree._Element) -> Tuple[str, bool]:
             lower = False
 
             if value and key in ['word', 'lemma']:
-                caseinsensitive: str = att.get('caseinsensitive', 'no')
+                caseinsensitive = cast(str, att.get('caseinsensitive', 'no'))
                 if caseinsensitive == 'yes':
                     lower = True
 
