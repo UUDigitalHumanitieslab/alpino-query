@@ -1,0 +1,4 @@
+water
+~rel,~word,~lemma,pt,~postag
+rel
+0
