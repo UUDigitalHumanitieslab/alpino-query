@@ -107,3 +107,15 @@ pip install twine
 python setup.py sdist
 twine upload dist/*
 ```
+
+## Credits
+
+This was original part of the [GrETEL](https://github.com/UUDigitalHumanitieslab/gretel) codebase and is (still) used by its Example Based Search functionality.
+
+* [Liesbeth Augustinus](http://www.ccl.kuleuven.be/~liesbeth/) and [Vincent Vandeghinste](http://www.ccl.kuleuven.be/~vincent/ccl): concept and initial implementation
+* [Bram Vanroy](http://bramvanroy.be/): GrETEL 3 improvements and design
+* [Sheean Spoel](http://www.uu.nl/staff/SJJSpoel): rewritten in Python, moved to separate library and added some improvements
+
+## License
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (cc-by-sa-4.0). See the [LICENSE](LICENSE) file for license rights and limitations.
