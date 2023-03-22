@@ -3,15 +3,15 @@
 import re
 from typing import cast, List, Set
 from lxml import etree
-
+from .xpath_generator import escape_xpath_attribute
 
 def mark(twig: etree._Element, tokens: List[str], attributes: List[str]) -> None:
     # add info annotation matrix to alpino parse
     for begin, token in enumerate(tokens):
         if re.match(r"([_<>\.,\?!\(\)\"\'])|(\&quot;)|(\&apos;)", token):
-            xp = cast(List[etree._Element], twig.xpath(f"//node[@begin='{begin}']"))
+            xp = cast(List[etree._Element], twig.xpath(f"//node[@begin={escape_xpath_attribute(begin)}]"))
         else:
-            xp = cast(List[etree._Element], twig.xpath(f"//node[@word='{token}' and @begin='{begin}']"))
+            xp = cast(List[etree._Element], twig.xpath(f"//node[@word={escape_xpath_attribute(token)} and @begin={escape_xpath_attribute(begin)}]"))
         if begin < len(attributes):
             attrs = attributes[begin].split(',')
             for x in xp:

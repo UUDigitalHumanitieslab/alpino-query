@@ -1,0 +1,1 @@
+//node[@cat="np" and node[@cat="detp" and @rel="det" and node[@pt="n"] and node[lower-case(@lemma)="zijn" and @pt="vnw" and lower-case(@word)="z'n"]] and node[@pt="n"]]
