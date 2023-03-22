@@ -189,7 +189,7 @@ def escape_xpath_attribute(value: Union[str, int]) -> str:
         return str(value)
     
     escaped = []
-    for part in re.findall('("|\'|[^"]+)', value):
+    for part in re.findall('("|\'|[^"]+)', cast(str, value)):
         if '"' in part:
             escaped.append(f"'{part}'")
         else:
