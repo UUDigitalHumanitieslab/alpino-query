@@ -1,0 +1,5 @@
+<node begin="0" cat="du">
+      <node begin="0" lemma="hallo" test="['foo']=&quot;bar&quot;"/>
+      <node begin="1" lemma="wereld"/>
+    </node>
+    

@@ -1,0 +1,8 @@
+<node begin="0" cat="np">
+      <node begin="0" cat="detp" rel="det">
+        <node begin="0" pt="n"/>
+        <node begin="1" lemma="zijn" pt="vnw" word="z'n" caseinsensitive="yes"/>
+      </node>
+      <node begin="2" pt="n"/>
+    </node>
+  

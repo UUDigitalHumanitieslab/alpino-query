@@ -1,0 +1,4 @@
+Jan z'n schoenen
+~rel,~word,~lemma,pt,~postag ~rel,word,lemma,pt,~postag ~rel,~word,~lemma,pt,~postag
+rel
+0

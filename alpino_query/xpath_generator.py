@@ -22,7 +22,7 @@
 ############################################################################
 
 import re
-from typing import cast, List, Tuple, Iterable
+from typing import cast, List, Tuple, Iterable, Union
 from lxml import etree
 
 
@@ -176,13 +176,38 @@ def FindNextLeafNode(node):
         return node, path
 
 
+def escape_xpath_attribute(value: Union[str, int]) -> str:
+    """Escapes a value for use an XPATH attribute
+
+    Args:
+        value (Union[str, int]): the text or number to include
+
+    Returns:
+        str: valid XPATH attribute
+    """
+    if type(value) is int:
+        return str(value)
+    
+    escaped = []
+    for part in re.findall('("|\'|[^"]+)', cast(str, value)):
+        if '"' in part:
+            escaped.append(f"'{part}'")
+        else:
+            escaped.append(f'"{part}"')
+
+    if len(escaped) == 1:
+        return escaped[0]
+    
+    return "concat(" + ", ".join(escaped) + ")"
+
+
 def property_selector(key: str, value: str, lower: bool, negative: bool) -> str:
     operator = "!=" if negative else "="
 
-    if lower:
-        selector = f"lower-case(@{key}){operator}\"{value.lower()}\""
+    if lower and value.lower() != value.upper():
+        selector = f"lower-case(@{key}){operator}{escape_xpath_attribute(value.lower())}"
     elif value:
-        selector = f"@{key}{operator}\"{value}\""
+        selector = f"@{key}{operator}{escape_xpath_attribute(value)}"
     else:
         selector = f"@{key}"
         if negative:

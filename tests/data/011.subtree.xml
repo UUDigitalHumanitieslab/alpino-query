@@ -1,0 +1,23 @@
+<node begin="0" cat="top">
+    <node begin="2" word=":" caseinsensitive="yes"/>
+    <node begin="3" word="&quot;" caseinsensitive="yes"/>
+    <node begin="0" cat="du" rel="--">
+      <node begin="0" cat="smain" rel="tag">
+        <node begin="0" word="Ze" caseinsensitive="yes"/>
+        <node begin="1" word="zei" caseinsensitive="yes"/>
+      </node>
+      <node begin="4" cat="whq" rel="nucl">
+        <node begin="4" word="wat" caseinsensitive="yes"/>
+        <node begin="4" cat="sv1" rel="body">
+          <node begin="5" word="is" caseinsensitive="yes"/>
+          <node begin="6" cat="np" rel="su">
+            <node begin="6" word="d'r" caseinsensitive="yes"/>
+            <node begin="7" word="probleem" caseinsensitive="yes"/>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node begin="8" word="?" caseinsensitive="yes"/>
+    <node begin="9" word="&quot;" caseinsensitive="yes"/>
+  </node>
+  
