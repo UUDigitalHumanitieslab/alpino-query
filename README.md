@@ -1,5 +1,5 @@
 # Alpino Query
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10411200.svg)](https://doi.org/10.5281/zenodo.10411200)
+[![DOI](https://zenodo.org/badge/421861899.svg)](https://zenodo.org/doi/10.5281/zenodo.10418665)
 [![PyPI version](https://badge.fury.io/py/alpino-query.svg)](https://badge.fury.io/py/alpino-query)
 [![Actions Status](https://github.com/UUDigitalHumanitiesLab/alpino-query/workflows/Python%20package/badge.svg)](https://github.com/UUDigitalHumanitiesLab/alpino-query/actions)
 
